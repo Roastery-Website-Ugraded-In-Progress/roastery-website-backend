@@ -27,7 +27,7 @@ app.use(
     origin: function (origin, callback) {
       if (!origin) return callback(null, true);
 
-      if (origin === frontendOrigin) {
+      if (origin && origin.includes("netlify.app")) {
         return callback(null, true);
       }
 
@@ -41,6 +41,10 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
+    cookie: {
+      secure: true,
+      sameSite: "none",
+    },
   })
 );
 app.use(express.json());
