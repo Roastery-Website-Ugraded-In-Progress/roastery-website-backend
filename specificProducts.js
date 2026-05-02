@@ -33,6 +33,7 @@ router.get("/products/:title", async (req, res) => {
       message: "Invalid category",
     });
   }
+  console.log("the category name is: "+categoryName);
 
   try {
     const { data: categoryId, error: categoryError } = await supabase
@@ -47,6 +48,7 @@ router.get("/products/:title", async (req, res) => {
         message: "Category not found",
       });
     }
+  console.log("the category id is: "+categoryId);
 
     const { data, error } = await supabase
       .from("Roastery_Products")
