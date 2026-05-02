@@ -43,7 +43,7 @@ router.get("/products/:title", async (req, res) => {
       .eq("name", categoryName)
       .single();
 
-    if (categoryError || !categoryId) {
+    if (categoryError || !category) {
       return res.status(404).json({
         success: false,
         message: "Category not found",
