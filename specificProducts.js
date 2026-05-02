@@ -10,7 +10,7 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-function getTableName(title) {
+function getCategoryName(title) {
   if (title.startsWith("Roasted")) return "roasted_nuts";
   if (title.startsWith("Raw")) return "raw_nuts";
   if (title.startsWith("Dates")) return "dates";
@@ -25,9 +25,9 @@ function getTableName(title) {
 
 router.get("/products/:title", async (req, res) => {
   const title = decodeURIComponent(req.params.title);
-  const tableName = getTableName(title);
+  const categoryName = getCategoryName(title);
 
-  if (!tableName) {
+  if (!categoryName) {
     return res.status(400).json({
       success: false,
       message: "Invalid category",
@@ -35,10 +35,28 @@ router.get("/products/:title", async (req, res) => {
   }
 
   try {
-    const { data, error } = await supabase.from(tableName).select("*");
+    const { data: category, error: categoryError } = await supabase
+      .from("Categories")
+      .select("Categories_id")
+      .eq("name", categoryName)
+      .single();
+
+    if (categoryError || !category) {
+      return res.status(404).json({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    const categoryId = category.Categories_id;
+
+    const { data, error } = await supabase
+      .from("Roastery_Products")
+      .select("*")
+      .eq("Categories_id", categoryId);
 
     if (error) {
-      console.error(`Supabase error for ${tableName}:`, error);
+      console.error("Supabase error:", error);
       return res.status(500).json({
         success: false,
         message: "Database error",
