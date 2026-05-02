@@ -10,7 +10,7 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-function getTableNameFromCategory(category) {
+function getCategoryNameAttribute(category) {
   const map = {
     "Candies and Jellies": "candiesandjellies",
     Chinese: "chinese",
@@ -31,13 +31,13 @@ router.get("/item/:name_of_the_category/:title", async (req, res) => {
   const title = decodeURIComponent(req.params.title);
 
   try {
-    let tableName = getTableNameFromCategory(name_of_the_category);
+    let categoryNameAttribute = getCategoryName(name_of_the_category);
 
-    if (!tableName && title === "Coffee") {
-      tableName = "coffee";
+    if (!categoryNameAttribute && title === "Coffee") {
+      categoryNameAttribute = "coffee";
     }
 
-    if (!tableName) {
+    if (!categoryNameAttribute) {
       return res.status(400).json({ error: "Invalid category" });
     }
 
