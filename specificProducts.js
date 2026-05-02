@@ -9,6 +9,7 @@ const router = express.Router();
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
+console.log("The compiling reached here");
 
 function getCategoryName(title) {
   if (title.startsWith("Roasted")) return "roasted_nuts";
