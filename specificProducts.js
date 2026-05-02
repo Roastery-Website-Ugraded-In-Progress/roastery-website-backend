@@ -36,7 +36,7 @@ router.get("/products/:title", async (req, res) => {
   console.log("the category name is: "+categoryName);
 
   try {
-    const { data: categoryId, error: categoryError } = await supabase
+    const { data: category, error: categoryError } = await supabase
       .from("Categories")
       .select("Categories_id")
       .eq("name", categoryName)
@@ -48,6 +48,7 @@ router.get("/products/:title", async (req, res) => {
         message: "Category not found",
       });
     }
+    const categoryId = category.Categories_id;
   console.log("the category id is: "+categoryId);
 
     const { data, error } = await supabase
