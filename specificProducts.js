@@ -35,20 +35,18 @@ router.get("/products/:title", async (req, res) => {
   }
 
   try {
-    const { data: category, error: categoryError } = await supabase
+    const { data: categoryId, error: categoryError } = await supabase
       .from("Categories")
       .select("Categories_id")
       .eq("name", categoryName)
       .single();
 
-    if (categoryError || !category) {
+    if (categoryError || !categoryId) {
       return res.status(404).json({
         success: false,
         message: "Category not found",
       });
     }
-
-    const categoryId = category.Categories_id;
 
     const { data, error } = await supabase
       .from("Roastery_Products")
