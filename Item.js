@@ -10,7 +10,7 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-function getCategoryNameAttribute(category) {
+function getCategoryAttributeFromCategory(category) {
   const map = {
     "Candies and Jellies": "candiesandjellies",
     Chinese: "chinese",
@@ -28,31 +28,33 @@ router.get("/item/:name_of_the_category/:title", async (req, res) => {
   const name_of_the_category = decodeURIComponent(
     req.params.name_of_the_category
   );
-  console.log("The name of the category is: "+name_of_the_category);
   const title = decodeURIComponent(req.params.title);
 
   try {
-    let categoryNameAttribute = getCategoryName(name_of_the_category);
+    let categoryAttribute = getCategoryAttributeFromCategory(name_of_the_category);
 
-    if (!categoryNameAttribute && title === "Coffee") {
-      categoryNameAttribute = "coffee";
+    if (!categoryAttribute && title === "Coffee") {
+      categoryAttribute = "coffee";
     }
 
-    if (!categoryNameAttribute) {
+    if (!categoryAttribute) {
       return res.status(400).json({ error: "Invalid category" });
     }
 
     let data, error;
 
+    const {data,error}=await supabase.from("Categories").select("Categories_id").eq("name",categoryAttribute).single();
+    const categoryId = data.Categories_id;
+    
     if (title === "Coffee") {
-      ({ data, error } = await supabase.from(tableName).select("*").single());
+      ({ data, error } = await supabase.from("Roastery_Products").select("*").eq("Categories_id",categoryId).single());
     } else {
       ({ data, error } = await supabase
-        .from(tableName)
+        .from(Roastery_Products)
         .select("*")
-        .eq("name_of_product", title)
+        .eq("Categories_id", categoryId)
         .single());
-    }
+    };
 
     if (error || !data) {
       return res.status(404).json({ error: "Product not found" });
