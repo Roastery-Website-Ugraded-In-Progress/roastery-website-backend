@@ -41,7 +41,6 @@ router.get("/item/:name_of_the_category/:title", async (req, res) => {
       return res.status(400).json({ error: "Invalid category" });
     }
 
-    let data, error;
 
     const {data,error}=await supabase.from("Categories").select("Categories_id").eq("name",categoryAttribute).single();
     const categoryId = data.Categories_id;
@@ -50,7 +49,7 @@ router.get("/item/:name_of_the_category/:title", async (req, res) => {
       ({ data, error } = await supabase.from("Roastery_Products").select("*").eq("Categories_id",categoryId).single());
     } else {
       ({ data, error } = await supabase
-        .from(Roastery_Products)
+        .from("Roastery_Products")
         .select("*")
         .eq("Categories_id", categoryId)
         .single());
