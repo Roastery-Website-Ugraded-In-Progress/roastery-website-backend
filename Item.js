@@ -56,7 +56,8 @@ router.get("/item/:name_of_the_category/:title", async (req, res) => {
         .from("Roastery_Products")
         .select("*")
         .eq("Categories_id", categoryId)
-        .eq("Product_name", title);
+        .eq("Product_name", title)
+        .single();
     }
     data=result.data;
     error=result.error;
