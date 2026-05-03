@@ -28,6 +28,7 @@ router.get("/item/:name_of_the_category/:title", async (req, res) => {
   const name_of_the_category = decodeURIComponent(
     req.params.name_of_the_category
   );
+  console.log("The name of the category is: "+name_of_the_category);
   const title = decodeURIComponent(req.params.title);
 
   try {
