@@ -49,16 +49,12 @@ router.get("/item/:name_of_the_category/:title", async (req, res) => {
       return res.status(404).json({ error: "Category not found" });
     }
     
-    if (title === "Coffee") {
-      let result = { data, error } = await supabase.from("Roastery_Products").select("*").eq("Categories_id",categoryId).eq("Product_name",title).single();
-    } else {
-      let result={ data, error } = await supabase
-        .from("Roastery_Products")
-        .select("*")
-        .eq("Categories_id", categoryId)
-        .eq("Product_name", title)
-        .single();
-    }
+    let result= await supabase
+    .from("Roastery_Products")
+    .select("*")
+    .eq("Categories_id", categoryId)
+    .eq("Product_name", title)
+    .single();
     data=result.data;
     error=result.error;
 
