@@ -114,6 +114,44 @@ router.post("/add-product", async (req, res) => {
     res.status(500).json({ success: false, error: "Server error" });
   }
 });
+router.delete("/delete-product", async (req, res) => {
+  const { Product_id } = req.body;
 
+  if (!Product_id) {
+    return res.status(400).json({
+      success: false,
+      message: "Product_id is required",
+    });
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("Roastery_Products")
+      .delete()
+      .eq("Product_id", Product_id)
+      .select();
+
+    if (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Delete failed",
+        error: error.message,
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Product deleted successfully",
+      data,
+    });
+  } catch (err) {
+    console.error("Delete error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: err.message,
+    });
+  }
+});
 
 export default router;
