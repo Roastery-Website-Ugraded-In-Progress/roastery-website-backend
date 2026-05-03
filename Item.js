@@ -46,12 +46,13 @@ router.get("/item/:name_of_the_category/:title", async (req, res) => {
     const categoryId = data.Categories_id;
     
     if (title === "Coffee") {
-      ({ data, error } = await supabase.from("Roastery_Products").select("*").eq("Categories_id",categoryId));
+      ({ data, error } = await supabase.from("Roastery_Products").select("*").eq("Categories_id",categoryId).eq("Product_name",title));
     } else {
       ({ data, error } = await supabase
         .from("Roastery_Products")
         .select("*")
-        .eq("Categories_id", categoryId));
+        .eq("Categories_id", categoryId)
+        .eq("Product_name", title));
     };
 
     if (error || !data) {
