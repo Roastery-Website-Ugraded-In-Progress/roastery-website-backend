@@ -114,4 +114,20 @@ router.post("/add-product", async (req, res) => {
     res.status(500).json({ success: false, error: "Server error" });
   }
 });
+
+router.delete("/categories/:title", async (req, res) => {
+  const { title } = req.params;
+
+  const { data, error } = await supabase
+    .from("Categories")
+    .delete()
+    .eq("name", title); // ⚠️ use your actual column name
+
+  if (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Failed to delete category" });
+  }
+
+  res.json({ message: "Category deleted successfully", data });
+});
 export default router;
