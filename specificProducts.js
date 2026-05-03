@@ -76,5 +76,42 @@ router.get("/products/:title", async (req, res) => {
     });
   }
 });
+router.post("/add-product", async (req, res) => {
+  const { product_name, image, price_per_kg, description, categories_id } = req.body;
+    if (!product_name || !image || !price_per_kg || !categories_id) {
+    return res.status(400).json({
+      success: false,
+      message: "Missing required fields",
+    });
+  }
+  try {
+    // Insert product into Supabase
+    const { data, error } = await supabase
+      .from("Roastery_Products")
+      .insert([
+        {
+          Product_name: product_name,
+          Image: image,
+          Price_per_kg: price_per_kg,
+          Description: description,
+          Categories_id: categories_id,
+        },
+      ])
+      .select()
+      .single();
 
+    if (error) {
+      return res.status(500).json({ success: false, error: error.message });
+    }
+
+    res.json({
+      success: true,
+      message: "Product added successfully",
+      data,
+    });
+  } catch (err) {
+    console.error("Add product error:", err);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+});
 export default router;
