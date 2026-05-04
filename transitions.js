@@ -80,7 +80,6 @@ passport.use(
 passport.serializeUser((user, cb) => cb(null, user));
 passport.deserializeUser((user, cb) => cb(null, user));
 
-// Auth routes
 app.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user) => {
     if (err) return res.status(500).json({ message: "Server error" });
