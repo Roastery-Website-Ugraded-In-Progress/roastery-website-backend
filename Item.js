@@ -133,7 +133,7 @@ router.get("/someEndpoint", async (req, res) => {
 
   try {
     const { data, error } = await supabase
-      .from("products")
+      .from("orders")
       .insert([
         {
           email: email2,
