@@ -37,7 +37,7 @@ router.get("/item/:name_of_the_category/:title", async (req, res) => {
       categoryAttribute = "coffee";
     }
 
-    if (!categoryAttribute) {
+    else if (!categoryAttribute && title!=="Coffee") {
       return res.status(400).json({ error: "Invalid category" });
     }
 
