@@ -28,7 +28,7 @@ router.get("/item/:name_of_the_category/:title", async (req, res) => {
   const name_of_the_category = decodeURIComponent(
     req.params.name_of_the_category
   );
-  const title = decodeURIComponent(req.params.title);
+  let title = decodeURIComponent(req.params.title);
 
   try {
     let categoryAttribute = getCategoryAttributeFromCategory(name_of_the_category);
@@ -42,12 +42,18 @@ router.get("/item/:name_of_the_category/:title", async (req, res) => {
     }
     console.log("hello");
 
-    let {data,error}=await supabase.from("Categories").select("Categories_id").eq("name",categoryAttribute).single();
-    const categoryId = data.Categories_id;
+    let { data, error } = await supabase
+    .from("Categories")
+    .select("Categories_id")
+    .eq("name", categoryAttribute)
+    .single();
 
-    if (!data) {
+    if (error || !data) {
+      console.error("Category fetch error:", error);
       return res.status(404).json({ error: "Category not found" });
     }
+
+    const categoryId = data.Categories_id;
     
     let result= await supabase
     .from("Roastery_Products")
