@@ -36,10 +36,10 @@ router.get("/item/:name_of_the_category/:title", async (req, res) => {
     if (!categoryAttribute && title === "Coffee") {
       categoryAttribute = "coffee";
     }
-    console.log("hello");
     else if (!categoryAttribute && title!=="Coffee") {
       return res.status(400).json({ error: "Invalid category" });
     }
+    console.log("hello");
 
     let {data,error}=await supabase.from("Categories").select("Categories_id").eq("name",categoryAttribute).single();
     const categoryId = data.Categories_id;
