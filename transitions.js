@@ -131,7 +131,7 @@ app.post("/signUp", async (req, res) => {
   }
 });
 
-app.use("/api", specificProducts);
+app.use("/api/products", specificProducts);
 app.use("/api", itemRouter);
 app.use("/api", userProductsRouter);
 
