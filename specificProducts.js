@@ -10,7 +10,6 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// ✅ CATEGORY MAPPING
 function getCategoryName(title) {
   if (title.startsWith("Roasted")) return "roasted_nuts";
   if (title.startsWith("Raw")) return "raw_nuts";
@@ -24,7 +23,6 @@ function getCategoryName(title) {
   return null;
 }
 
-// ✅ GET PRODUCTS
 router.get("/:title", async (req, res) => {
   const title = decodeURIComponent(req.params.title);
   const categoryName = getCategoryName(title);
@@ -73,7 +71,6 @@ router.get("/:title", async (req, res) => {
   }
 });
 
-// ✅ ADD PRODUCT
 router.post("/add-product", async (req, res) => {
   const { product_name, image, price_per_kg, description, category_id } =
   req.body;
@@ -114,7 +111,6 @@ router.post("/add-product", async (req, res) => {
   }
 });
 
-// ✅ DELETE PRODUCT
 router.delete("/delete-product", async (req, res) => {
   const { Product_id } = req.body;
 
