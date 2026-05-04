@@ -9,8 +9,8 @@ const router = express.Router();
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
-console.log("The compiling reached here");
 
+// ✅ CATEGORY MAPPING
 function getCategoryName(title) {
   if (title.startsWith("Roasted")) return "roasted_nuts";
   if (title.startsWith("Raw")) return "raw_nuts";
@@ -24,6 +24,7 @@ function getCategoryName(title) {
   return null;
 }
 
+// ✅ GET PRODUCTS
 router.get("/products/:title", async (req, res) => {
   const title = decodeURIComponent(req.params.title);
   const categoryName = getCategoryName(title);
@@ -34,7 +35,6 @@ router.get("/products/:title", async (req, res) => {
       message: "Invalid category",
     });
   }
-  console.log("the category name is: "+categoryName);
 
   try {
     const { data: category, error: categoryError } = await supabase
@@ -49,16 +49,13 @@ router.get("/products/:title", async (req, res) => {
         message: "Category not found",
       });
     }
-    const categoryId = category.Categories_id;
-  console.log("the category id is: "+categoryId);
 
     const { data, error } = await supabase
       .from("Roastery_Products")
       .select("*")
-      .eq("Categories_id", categoryId);
+      .eq("Categories_id", category.Categories_id);
 
     if (error) {
-      console.error("Supabase error:", error);
       return res.status(500).json({
         success: false,
         message: "Database error",
@@ -68,7 +65,6 @@ router.get("/products/:title", async (req, res) => {
 
     res.json(data || []);
   } catch (err) {
-    console.error("Server error:", err);
     res.status(500).json({
       success: false,
       message: "Server error",
@@ -76,16 +72,20 @@ router.get("/products/:title", async (req, res) => {
     });
   }
 });
+
+// ✅ ADD PRODUCT
 router.post("/add-product", async (req, res) => {
-  const { product_name, image, price_per_kg, description, categories_id } = req.body;
-    if (!product_name || !image || !price_per_kg || !categories_id) {
+  const { product_name, image, price_per_kg, description, categories_id } =
+    req.body;
+
+  if (!product_name || !image || !price_per_kg || !categories_id) {
     return res.status(400).json({
       success: false,
       message: "Missing required fields",
     });
   }
+
   try {
-    // Insert product into Supabase
     const { data, error } = await supabase
       .from("Roastery_Products")
       .insert([
@@ -110,10 +110,11 @@ router.post("/add-product", async (req, res) => {
       data,
     });
   } catch (err) {
-    console.error("Add product error:", err);
     res.status(500).json({ success: false, error: "Server error" });
   }
 });
+
+// ✅ DELETE PRODUCT
 router.delete("/delete-product", async (req, res) => {
   const { Product_id } = req.body;
 
@@ -145,7 +146,6 @@ router.delete("/delete-product", async (req, res) => {
       data,
     });
   } catch (err) {
-    console.error("Delete error:", err);
     res.status(500).json({
       success: false,
       message: "Server error",
