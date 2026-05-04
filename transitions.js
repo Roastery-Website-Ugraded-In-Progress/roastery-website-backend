@@ -103,13 +103,15 @@ app.get("/logout", (req, res, next) => {
 app.post("/signUp", async (req, res) => {
   const { username: email, password, nameOfTheUser } = req.body;
   try {
+    if(nameOfTheUser==="HassanAtouiAdmin")
+      return res.status(400).json({message: "Username cannot be HassanAtouiAdmin"});
     const { data: existingUsers } = await supabase
       .from("users")
       .select("*")
       .eq("email", email);
     if (existingUsers.length > 0)
       return res.status(400).json({ message: "Email already exists" });
-
+    
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     const { data: newUser, error } = await supabase
       .from("users")
