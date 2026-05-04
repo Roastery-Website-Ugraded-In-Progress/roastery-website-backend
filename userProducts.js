@@ -58,5 +58,32 @@ router.get("/userProducts", async (req, res) => {
     res.status(500).json({ success: false, error: "Database error" });
   }
 });
+router.delete("/userProducts", async (req, res) => {
+  const { email } = req.query;
+
+  if (!email) {
+    return res.status(400).json({ success: false, error: "Email is required" });
+  }
+
+  try {
+    const { error } = await supabase
+      .from("products")
+      .delete()
+      .eq("email", email);
+
+    if (error) {
+      console.error("Supabase delete error:", error);
+      return res.status(500).json({ success: false, error: error.message });
+    }
+
+    res.json({
+      success: true,
+      message: "All user products deleted successfully",
+    });
+  } catch (err) {
+    console.error("Server error:", err);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+});
 
 export default router;
