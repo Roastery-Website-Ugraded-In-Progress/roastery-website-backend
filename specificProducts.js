@@ -75,8 +75,8 @@ router.get("/:title", async (req, res) => {
 
 // ✅ ADD PRODUCT
 router.post("/add-product", async (req, res) => {
-  const { product_name, image, price_per_kg, description, categories_id } =
-    req.body;
+  const { product_name, image, price_per_kg, description, category_id } =
+  req.body;
 
   if (!product_name || !image || !price_per_kg || !categories_id) {
     return res.status(400).json({
@@ -94,7 +94,7 @@ router.post("/add-product", async (req, res) => {
           Image: image,
           Price_per_kg: price_per_kg,
           Description: description,
-          Categories_id: categories_id,
+          Categories_id: category_id,
         },
       ])
       .select()
