@@ -37,8 +37,8 @@ router.get("/item/:name_of_the_category/:title", async (req, res) => {
       categoryAttribute = "coffee";
       title="500 g Coffee Bag";
     }
-    else if (!categoryAttribute && title!=="Coffee") {
-      return res.status(400).json({ error: "Invalid category" });
+    else if (!categoryAttribute && title !== "Coffee") {
+      return res.status(400).json({ success: false, error: "Invalid category" });
     }
     let { data, error } = await supabase
     .from("Categories")
@@ -53,20 +53,18 @@ router.get("/item/:name_of_the_category/:title", async (req, res) => {
 
     const categoryId = data.Categories_id;
     
-    let result= await supabase
+    const { data: productData, error: productError } = await supabase
     .from("Roastery_Products")
     .select("*")
     .eq("Categories_id", categoryId)
     .eq("Product_name", title)
     .single();
-    data=result.data;
-    error=result.error;
+  
+  if (productError || !productData) {
+    return res.status(404).json({ error: "Product not found" });
+  }
 
-    if (error || !data) {
-      return res.status(404).json({ error: "Product not found" });
-    }
-
-    res.json(data);
+res.json(productData);
   } catch (err) {
     console.error("Error fetching product:", err);
     res.status(500).json({ error: "Server error" });
@@ -76,12 +74,27 @@ router.get("/item/:name_of_the_category/:title", async (req, res) => {
 router.post("/updatePrice", async (req, res) => {
   const { category, productName, newPrice } = req.body;
 
+  if (!category || !productName || !newPrice) {
+    return res.status(400).json({
+      success: false,
+      error: "Missing fields",
+    });
+  }
+  
+  let categoryAttribute = getCategoryAttributeFromCategory(category);
+  if (!categoryAttribute) {
+    return res.status(400).json({
+      success: false,
+      error: "Invalid category",
+    });
+  }
+
   try {
     const { data: categoryData, error: categoryError } = await supabase
-      .from("Categories")
-      .select("Categories_id")
-      .eq("name", category)
-      .single();
+    .from("Categories")
+    .select("Categories_id")
+    .eq("name", categoryAttribute)
+    .single();
 
     if (categoryError || !categoryData) {
       return res.status(404).json({ success: false, error: "Category not found" });
@@ -89,16 +102,24 @@ router.post("/updatePrice", async (req, res) => {
 
     const categoryId = categoryData.Categories_id;
 
-    const { error } = await supabase
+    const { data: updateData, error } = await supabase
       .from("Roastery_Products")
       .update({ Price_per_kg: newPrice })
       .eq("Categories_id", categoryId)
-      .eq("Product_name", productName);
-
+      .eq("Product_name", productName)
+      .select();
+    
     if (error) {
-      return res.status(500).json({ success: false, error: error.message });
+    return res.status(500).json({ success: false, error: error.message });
     }
-
+    
+    if (!updateData || updateData.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: "No product updated (check name/category)",
+      });
+    }
+    
     res.json({ success: true });
 
   } catch (err) {
