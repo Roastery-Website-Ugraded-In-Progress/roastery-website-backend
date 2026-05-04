@@ -25,7 +25,7 @@ function getCategoryName(title) {
 }
 
 // ✅ GET PRODUCTS
-router.get("/products/:title", async (req, res) => {
+router.get("/:title", async (req, res) => {
   const title = decodeURIComponent(req.params.title);
   const categoryName = getCategoryName(title);
 
