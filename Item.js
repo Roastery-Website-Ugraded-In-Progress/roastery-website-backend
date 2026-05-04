@@ -73,6 +73,40 @@ router.get("/item/:name_of_the_category/:title", async (req, res) => {
   }
 });
 
+router.post("/updatePrice", async (req, res) => {
+  const { category, productName, newPrice } = req.body;
+
+  try {
+    const { data: categoryData, error: categoryError } = await supabase
+      .from("Categories")
+      .select("Categories_id")
+      .eq("name", category)
+      .single();
+
+    if (categoryError || !categoryData) {
+      return res.status(404).json({ success: false, error: "Category not found" });
+    }
+
+    const categoryId = categoryData.Categories_id;
+
+    const { error } = await supabase
+      .from("Roastery_Products")
+      .update({ Price_per_kg: newPrice })
+      .eq("Categories_id", categoryId)
+      .eq("Product_name", productName);
+
+    if (error) {
+      return res.status(500).json({ success: false, error: error.message });
+    }
+
+    res.json({ success: true });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+});
+
 router.get("/someEndpoint", async (req, res) => {
   const { title, totalWeight, totalPrice, email2, nameOfTheUser } = req.query;
 
