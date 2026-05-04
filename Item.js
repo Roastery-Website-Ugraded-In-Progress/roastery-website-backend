@@ -40,8 +40,6 @@ router.get("/item/:name_of_the_category/:title", async (req, res) => {
     if (!categoryAttribute) {
       return res.status(400).json({ error: "Invalid category" });
     }
-    console.log("The categories id is: "+Categories_id);
-    console.log("The categories attribute is: "+categoryAttribute);
 
     let {data,error}=await supabase.from("Categories").select("Categories_id").eq("name",categoryAttribute).single();
     const categoryId = data.Categories_id;
