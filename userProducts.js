@@ -19,7 +19,7 @@ router.get("/userProducts", async (req, res) => {
 
   try {
     const { data, error } = await supabase
-      .from("products")
+      .from("orders")
       .select("product, totalweight, totalprice")
       .eq("email", email);
 
@@ -67,7 +67,7 @@ router.delete("/userProducts", async (req, res) => {
 
   try {
     const { error } = await supabase
-      .from("products")
+      .from("orders")
       .delete()
       .eq("email", email);
 
