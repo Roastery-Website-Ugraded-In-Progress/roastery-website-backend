@@ -25,7 +25,6 @@ function getCategoryAttributeFromCategory(category) {
 }
 
 router.get("/item/:name_of_the_category/:title", async (req, res) => {
-  console.log("Hello");
   const name_of_the_category = decodeURIComponent(
     req.params.name_of_the_category
   );
@@ -41,8 +40,6 @@ router.get("/item/:name_of_the_category/:title", async (req, res) => {
     else if (!categoryAttribute && title!=="Coffee") {
       return res.status(400).json({ error: "Invalid category" });
     }
-    console.log("hello"); 
-
     let { data, error } = await supabase
     .from("Categories")
     .select("Categories_id")
