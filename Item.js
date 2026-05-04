@@ -35,6 +35,7 @@ router.get("/item/:name_of_the_category/:title", async (req, res) => {
 
     if (!categoryAttribute && title === "Coffee") {
       categoryAttribute = "coffee";
+      title="coffee";
     }
 
     if (!categoryAttribute) {
