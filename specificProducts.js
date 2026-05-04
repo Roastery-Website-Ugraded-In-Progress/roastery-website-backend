@@ -78,7 +78,7 @@ router.post("/add-product", async (req, res) => {
   const { product_name, image, price_per_kg, description, category_id } =
   req.body;
 
-  if (!product_name || !image || !price_per_kg || !categories_id) {
+  if (!product_name || !image || !price_per_kg || !category_id) {
     return res.status(400).json({
       success: false,
       message: "Missing required fields",
